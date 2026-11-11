@@ -64,4 +64,34 @@ return static function(Prove $prove) {
                 ->lessThanOrEqual($size);
             $assert->same(Str\Encoding::ascii, $encoding);
         });
+
+    yield $prove
+        ->proof('Frame->flatMap()')
+        ->given(
+            Set::integers()->between(1, 100),
+            Set::integers()->between(1, 100),
+            Set::sequence(
+                Set::strings()->madeOf(Set::strings()->chars()->alphanumerical()),
+            )->atLeast(1),
+        )
+        ->filter(static fn($sizeA, $sizeB, $chunks) => \strlen(\implode('', $chunks)) >= ($sizeA + $sizeB))
+        ->test(static function(Assert $assert, $sizeA, $sizeB, $chunks) {
+            $frame = Frame::chunk($sizeA)->flatMap(
+                static fn($a) => Frame::chunk($sizeB)->map(
+                    static fn($b) => [$a, $b],
+                ));
+            $parsed = $frame(
+                Sequence::of(...$chunks)->map(Str::of(...)),
+            );
+
+            $assert->same(1, $parsed->size());
+            [[$a, $b]] = $parsed->toList();
+            $assert->same($sizeA, $a->length());
+            $assert
+                ->number($b->length())
+                ->lessThanOrEqual($sizeB);
+            $assert
+                ->string(\implode('', $chunks))
+                ->startsWith($a->append($b)->toString());
+        });
 };

@@ -74,4 +74,22 @@ final class Frame
             ),
         ));
     }
+
+    /**
+     * @template U
+     *
+     * @param callable(T): self<U> $map
+     *
+     * @return self<U>
+     */
+    public function flatMap(callable $map): self
+    {
+        return new self($this->parse->map(
+            static fn($previous) => Parse\FlatMap::of(
+                $previous,
+                $map,
+                static fn(self $self) => $self->parse->implementation(),
+            ),
+        ));
+    }
 }

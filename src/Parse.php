@@ -60,4 +60,12 @@ final class Parse
     {
         return new self($map($this->implementation));
     }
+
+    /**
+     * @return Parse\Implementation<T>
+     */
+    public function implementation(): Parse\Implementation
+    {
+        return $this->implementation;
+    }
 }

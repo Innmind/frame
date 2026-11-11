@@ -33,10 +33,13 @@ final class Chunk implements Implementation
         }
 
         // Use of Str::prepend() to keep the encoding
-        return new self(
-            $this->size,
-            $char->unwrap()->prepend($this->buffer),
-        );
+        $buffer = $char->unwrap()->prepend($this->buffer);
+
+        if ($buffer->length() === $this->size) {
+            return Parsed::of($buffer);
+        }
+
+        return new self($this->size, $buffer);
     }
 
     /**
