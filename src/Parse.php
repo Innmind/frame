@@ -48,4 +48,16 @@ final class Parse
     {
         return new self($implementation);
     }
+
+    /**
+     * @template U
+     *
+     * @param pure-callable(Parse\Implementation<T>): Parse\Implementation<U> $map
+     *
+     * @return self<U>
+     */
+    public function map(callable $map): self
+    {
+        return new self($map($this->implementation));
+    }
 }

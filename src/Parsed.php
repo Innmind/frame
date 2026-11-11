@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace Innmind\Frame;
 
-use Innmind\Immutable\Str;
-
 /**
  * @internal
  * @psalm-immutable
@@ -36,9 +34,22 @@ final class Parsed
     }
 
     /**
+     * @template U
+     *
+     * @param callable(T): U $map
+     *
+     * @return self<U>
+     */
+    public function map(callable $map): self
+    {
+        /** @psalm-suppress ImpureFunctionCall */
+        return new self($map($this->value));
+    }
+
+    /**
      * @return T
      */
-    public function unwrap(): Str
+    public function unwrap(): mixed
     {
         return $this->value;
     }

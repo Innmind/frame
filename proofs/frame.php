@@ -38,4 +38,30 @@ return static function(Prove $prove) {
                 ->string(\implode('', $chunks))
                 ->startsWith($parsed->toString());
         });
+
+    yield $prove
+        ->proof('Frame->map()')
+        ->given(
+            Set::integers()->between(1, 100),
+            Set::sequence(
+                Set::strings(),
+            )->atLeast(1),
+        )
+        ->filter(static fn($size, $chunks) => \strlen(\implode('', $chunks)) >= $size)
+        ->test(static function(Assert $assert, $size, $chunks) {
+            $frame = Frame::chunk($size)->map(static fn($str) => [
+                $str->length(),
+                $str->encoding(),
+            ]);
+            $parsed = $frame(
+                Sequence::of(...$chunks)->map(Str::of(...)),
+            );
+
+            $assert->same(1, $parsed->size());
+            [[$parsed, $encoding]] = $parsed->toList();
+            $assert
+                ->number($parsed)
+                ->lessThanOrEqual($size);
+            $assert->same(Str\Encoding::ascii, $encoding);
+        });
 };

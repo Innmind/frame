@@ -57,4 +57,21 @@ final class Frame
             Parse\Chunk::of($size),
         ));
     }
+
+    /**
+     * @template U
+     *
+     * @param callable(T): U $map
+     *
+     * @return self<U>
+     */
+    public function map(callable $map): self
+    {
+        return new self($this->parse->map(
+            static fn($implementation) => Parse\Map::of(
+                $implementation,
+                $map,
+            ),
+        ));
+    }
 }
