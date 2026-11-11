@@ -28,10 +28,6 @@ final class Chunk implements Implementation
     #[\Override]
     public function __invoke(Unparsed $char): self|Parsed
     {
-        if ($this->buffer->length() === $this->size) {
-            return Parsed::of($this->buffer);
-        }
-
         // Use of Str::prepend() to keep the encoding
         $buffer = $char->unwrap()->prepend($this->buffer);
 
