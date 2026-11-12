@@ -132,9 +132,7 @@ return static function(Prove $prove) {
             );
 
             [$first] = $parsed->toList();
-            $assert
-                ->number($first->length())
-                ->lessThanOrEqual($size);
+            $assert->same($size, $first->length());
             $assert
                 ->string(\implode('', $chunks))
                 ->startsWith($first->toString());

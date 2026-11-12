@@ -48,6 +48,7 @@ final class Passthrough
                     ->unwrap()
                     ->chunk()
                     ->map(Unparsed::of(...))
+                    ->prepend(Sequence::of($a))
                     ->aggregate(static fn(Parse|Parsed|Unparsed $a, Unparsed $b) => match (true) {
                         $a instanceof Parse => $a($b),
                         default => Sequence::of($a, $b),
