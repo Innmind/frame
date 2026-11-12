@@ -29,6 +29,7 @@ final class Frame
      *
      * @return Sequence<T>
      */
+    #[\NoDiscard]
     public function __invoke(Sequence $chunks): Sequence
     {
         /** @psalm-suppress InvalidArgument */
@@ -51,6 +52,7 @@ final class Frame
      *
      * @param int<1, max> $size
      */
+    #[\NoDiscard]
     public static function chunk(int $size): self
     {
         return new self(Parse::of(
@@ -65,6 +67,7 @@ final class Frame
      *
      * @return self<U>
      */
+    #[\NoDiscard]
     public function map(callable $map): self
     {
         return new self($this->parse->map(
@@ -82,6 +85,7 @@ final class Frame
      *
      * @return self<U>
      */
+    #[\NoDiscard]
     public function flatMap(callable $map): self
     {
         return new self($this->parse->map(
@@ -98,6 +102,7 @@ final class Frame
      *
      * @return Frame\Passthrough<T>
      */
+    #[\NoDiscard]
     public function passthrough(): Frame\Passthrough
     {
         return Frame\Passthrough::of($this->parse);

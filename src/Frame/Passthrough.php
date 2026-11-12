@@ -34,6 +34,7 @@ final class Passthrough
      *
      * @return Sequence<T|Str>
      */
+    #[\NoDiscard]
     public function __invoke(Sequence $chunks): Sequence
     {
         /** @psalm-suppress InvalidArgument */
