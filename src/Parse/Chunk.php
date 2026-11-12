@@ -11,6 +11,7 @@ use Innmind\Frame\{
 use Innmind\Immutable\Str;
 
 /**
+ * @internal
  * @psalm-immutable
  * @implements Implementation<Str>
  */
@@ -39,6 +40,7 @@ final class Chunk implements Implementation
     }
 
     /**
+     * @internal
      * @psalm-pure
      *
      * @param int<1, max> $size

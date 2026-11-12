@@ -7,6 +7,7 @@ namespace Innmind\Frame;
 use Innmind\Immutable\Str;
 
 /**
+ * @internal
  * @psalm-immutable
  */
 final class Unparsed
@@ -17,6 +18,7 @@ final class Unparsed
     }
 
     /**
+     * @internal
      * @psalm-pure
      */
     public static function of(Str $char): self

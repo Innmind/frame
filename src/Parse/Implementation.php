@@ -10,6 +10,7 @@ use Innmind\Frame\{
 };
 
 /**
+ * @internal
  * @psalm-immutable
  * @template T
  */
