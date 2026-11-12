@@ -51,6 +51,8 @@ final class Frame
      * @psalm-pure
      *
      * @param int<1, max> $size
+     *
+     * @return self<Str>
      */
     #[\NoDiscard]
     public static function chunk(int $size): self
