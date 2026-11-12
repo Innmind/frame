@@ -92,4 +92,14 @@ final class Frame
             ),
         ));
     }
+
+    /**
+     * This will also return the unparsed chars after the parsed frame
+     *
+     * @return Frame\Passthrough<T>
+     */
+    public function passthrough(): Frame\Passthrough
+    {
+        return Frame\Passthrough::of($this->parse);
+    }
 }

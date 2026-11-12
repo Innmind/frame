@@ -6,6 +6,7 @@ use Innmind\Frame\Frame;
 use Innmind\Immutable\{
     Sequence,
     Str,
+    Monoid\Concat,
 };
 use Innmind\BlackBox\{
     Set,
@@ -93,5 +94,32 @@ return static function(Prove $prove) {
             $assert
                 ->string(\implode('', $chunks))
                 ->startsWith($a->append($b)->toString());
+        });
+    yield $prove
+        ->proof('Frame->passthrough()')
+        ->given(
+            Set::integers()->between(1, 100),
+            Set::sequence(
+                Set::strings(),
+            )->atLeast(1),
+        )
+        ->filter(static fn($size, $chunks) => \strlen(\implode('', $chunks)) >= $size)
+        ->test(static function(Assert $assert, $size, $chunks) {
+            $frame = Frame::chunk($size)->passthrough();
+            $parsed = $frame(
+                Sequence::of(...$chunks)->map(Str::of(...)),
+            );
+
+            [$first] = $parsed->toList();
+            $assert
+                ->number($first->length())
+                ->lessThanOrEqual($size);
+            $assert
+                ->string(\implode('', $chunks))
+                ->startsWith($first->toString());
+            $assert->same(
+                \implode('', $chunks),
+                $parsed->fold(Concat::monoid)->toString(),
+            );
         });
 };
