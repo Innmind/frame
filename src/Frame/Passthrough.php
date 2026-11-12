@@ -40,11 +40,18 @@ final class Passthrough
         /** @psalm-suppress InvalidArgument */
         return $chunks
             ->map(static fn($chunk) => $chunk->toEncoding(Str\Encoding::ascii))
-            ->flatMap(static fn($chunk) => $chunk->chunk())
+            ->exclude(static fn($chunk) => $chunk->empty())
             ->map(Unparsed::of(...))
             ->prepend(Sequence::of($this->parse))
             ->aggregate(static fn(Parse|Parsed|Unparsed $a, Unparsed $b) => match (true) {
-                $a instanceof Parse => $a($b),
+                $a instanceof Parse => $b
+                    ->unwrap()
+                    ->chunk()
+                    ->map(Unparsed::of(...))
+                    ->aggregate(static fn(Parse|Parsed|Unparsed $a, Unparsed $b) => match(true) {
+                        $a instanceof Parse => $a($b),
+                        default => Sequence::of($a, $b),
+                    }),
                 default => Sequence::of($a, $b),
             })
             ->keep(Instance::of(Parsed::class)->or(
