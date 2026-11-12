@@ -15,7 +15,8 @@
         "issues": "http://github.com/innmind/frame/issues"
     },
     "require": {
-        "php": "~8.5"
+        "php": "~8.5",
+        "innmind/immutable": "~6.4"
     },
     "autoload": {
         "psr-4": {

@@ -1,4 +1,4 @@
-# frame
+# Frame
 
 [![CI](https://github.com/innmind/frame/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/innmind/frame/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/innmind/frame/branch/develop/graph/badge.svg)](https://codecov.io/gh/innmind/frame)
@@ -14,4 +14,4 @@ composer require innmind/frame
 
 ## Usage
 
-Todo
+This is intended for an internal usage for Innmind packages for now.
