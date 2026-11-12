@@ -41,6 +41,27 @@ return static function(Prove $prove) {
         });
 
     yield $prove
+        ->proof('Frame::chunk() returns nothing when not enough data')
+        ->given(
+            Set::integers()
+                ->between(2, 100)
+                ->flatMap(
+                    static fn($size) => Set::strings()
+                        ->atMost($size->unwrap() - 1)
+                        ->map(static fn($string) => [$size->unwrap(), $string]),
+                ),
+        )
+        ->test(static function(Assert $assert, $values) {
+            [$size, $string] = $values;
+            $frame = Frame::chunk($size);
+            $parsed = $frame(
+                Str::of($string)->chunk(),
+            );
+
+            $assert->same(0, $parsed->size());
+        });
+
+    yield $prove
         ->proof('Frame->map()')
         ->given(
             Set::integers()->between(1, 100),
