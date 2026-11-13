@@ -13,6 +13,7 @@ use Innmind\Immutable\{
     Sequence,
     Str,
     Predicate\Instance,
+    Monoid\Concat,
 };
 
 /**
@@ -52,7 +53,22 @@ final class Passthrough
                     ->aggregate(static fn(Parse|Parsed|Unparsed $a, Unparsed $b) => match (true) {
                         $a instanceof Parse => $a($b),
                         default => Sequence::of($a, $b),
-                    }),
+                    })
+                    ->match(
+                        static fn($first, $rest) => match (true) {
+                            $first instanceof Parsed => Sequence::of(
+                                $first,
+                                Unparsed::of(
+                                    $rest
+                                        // ->keep(Instance::of(Unparsed::class))
+                                        ->map(static fn($char) => $char->unwrap())
+                                        ->fold(Concat::monoid),
+                                ),
+                            ),
+                            default => $rest->prepend(Sequence::of($first)),
+                        },
+                        static fn() => Sequence::of(), // this case should not happen
+                    ),
                 default => Sequence::of($a, $b),
             })
             ->keep(Instance::of(Parsed::class)->or(
