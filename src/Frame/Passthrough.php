@@ -60,7 +60,7 @@ final class Passthrough
                                 $first,
                                 Unparsed::of(
                                     $rest
-                                        // ->keep(Instance::of(Unparsed::class))
+                                        ->keep(Instance::of(Unparsed::class))
                                         ->map(static fn($char) => $char->unwrap())
                                         ->fold(Concat::monoid),
                                 ),
