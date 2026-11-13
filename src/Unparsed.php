@@ -26,6 +26,14 @@ final class Unparsed
         return new self($char);
     }
 
+    /**
+     * @param pure-callable(Str): Str $map
+     */
+    public function map(callable $map): self
+    {
+        return new self($map($this->char));
+    }
+
     public function unwrap(): Str
     {
         return $this->char;
