@@ -116,6 +116,7 @@ return static function(Prove $prove) {
                 ->string(\implode('', $chunks))
                 ->startsWith($a->append($b)->toString());
         });
+
     yield $prove
         ->proof('Frame->passthrough()')
         ->given(
@@ -132,9 +133,7 @@ return static function(Prove $prove) {
             );
 
             [$first] = $parsed->toList();
-            $assert
-                ->number($first->length())
-                ->lessThanOrEqual($size);
+            $assert->same($size, $first->length());
             $assert
                 ->string(\implode('', $chunks))
                 ->startsWith($first->toString());
@@ -142,5 +141,27 @@ return static function(Prove $prove) {
                 \implode('', $chunks),
                 $parsed->fold(Concat::monoid)->toString(),
             );
+        });
+
+    yield $prove
+        ->proof('Frame->passthrough() reaggregate the remaining unparsed chunk')
+        ->given(
+            Set::strings()->between(11, 100_000),
+            Set::strings()->atLeast(1),
+        )
+        ->test(static function(Assert $assert, $first, $last) {
+            $frame = Frame::chunk(10)->passthrough();
+            $parsed = $frame(
+                Sequence::of($first, $last)->map(Str::of(...)),
+            )->toList();
+
+            $assert->count(3, $parsed);
+            [$chunk, $remaining, $unaffected] = $parsed;
+            $assert->same(10, $chunk->length());
+            $assert->same(
+                Str::of($first, Str\Encoding::ascii)->drop(10)->toString(),
+                $remaining->toString(),
+            );
+            $assert->same($last, $unaffected->toString());
         });
 };

@@ -13,7 +13,7 @@ use Innmind\Immutable\Str;
 final class Unparsed
 {
     private function __construct(
-        private Str $char,
+        private Str $value,
     ) {
     }
 
@@ -21,13 +21,21 @@ final class Unparsed
      * @internal
      * @psalm-pure
      */
-    public static function of(Str $char): self
+    public static function of(Str $value): self
     {
-        return new self($char);
+        return new self($value);
+    }
+
+    /**
+     * @param pure-callable(Str): Str $map
+     */
+    public function map(callable $map): self
+    {
+        return new self($map($this->value));
     }
 
     public function unwrap(): Str
     {
-        return $this->char;
+        return $this->value;
     }
 }
